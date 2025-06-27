@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include <X11/keysym.h>
 #include <X11/Xutil.h>
+#include <X11/XKBlib.h>
 
 /* max number of milliseconds between successive-clicks */
 #define DEFAULT_DOUBLE_CLICK_TIME 250
@@ -173,8 +174,8 @@ translate_event(unsigned long *code, unsigned long *mods, XEvent *xev)
 	if(*mods & ShiftMask)
 	{
 	    KeySym normal, shifted;
-	    normal = XKeycodeToKeysym (dpy, xev->xkey.keycode, 0);
-	    shifted = XKeycodeToKeysym (dpy, xev->xkey.keycode, 1);
+	    normal = XkbKeycodeToKeysym (dpy, xev->xkey.keycode, 0, 0);
+	    shifted = XkbKeycodeToKeysym (dpy, xev->xkey.keycode, 0, 1);
 
 	    /* Some keys don't have keysym at index 1, if not treat it as
 	       normal keysym shifted.
@@ -192,7 +193,7 @@ translate_event(unsigned long *code, unsigned long *mods, XEvent *xev)
 	    }
 	}
 	else
-	    *code = XKeycodeToKeysym(xev->xany.display, xev->xkey.keycode, 0);
+	    *code = XkbKeycodeToKeysym(xev->xany.display, xev->xkey.keycode, 0, 0);
 	if(*code != NoSymbol
 	   && (!IsModifierKey (*code)
 	       || global_symbol_value (Qeval_modifier_events) == Qt))
@@ -326,8 +327,8 @@ translate_event_to_x_key (repv ev, unsigned int *keycode, unsigned int *state)
 	s = direct_modifiers (s);
 
 	/* Check if we need a shift modifier */
-	normal = XKeycodeToKeysym (dpy, k, 0);
-	shifted = XKeycodeToKeysym (dpy, k, 1);
+	normal = XkbKeycodeToKeysym (dpy, k, 0, 0);
+	shifted = XkbKeycodeToKeysym (dpy, k, 0, 1);
 	if (sym != normal && sym == shifted)
 	    s |= ShiftMask;
 
@@ -1893,7 +1894,7 @@ static void button_num_init(void){
       const char *button_strings[] = { "Button6", "Button7", "Button8", "Button9", NULL };
 
       int i, j = 0, k;
-      for ( i = 0; i != NULL; i++){
+      for ( i = 0; button_strings[i] != NULL; i++){
 	for (j = 0; default_mods[j].name != 0; j++){
 	  if ( strcmp(default_mods[j].name, button_strings[i]) == 0){
 	    for( k = j; default_mods[k].name != 0; k++){

@@ -437,7 +437,9 @@ main(int argc, char **argv)
     old_argc = argc;
 
 #ifdef HAVE_GDK_PIXBUF
+#if !GLIB_CHECK_VERSION(2,35,0)
     g_type_init();
+#endif
 #endif
 
     prog_name = *argv++; argc--;

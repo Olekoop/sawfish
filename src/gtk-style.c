@@ -127,7 +127,6 @@ main (int argc, char **argv)
     GtkWidget *win;
     GtkStyle *style = 0;
 
-    gtk_set_locale();
     gtk_init (&argc, &argv);
     win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     style = gtk_rc_get_style (win);

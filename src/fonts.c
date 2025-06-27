@@ -415,6 +415,7 @@ pango_load (Lisp_Font *f)
     PangoFontDescription *fontdesc;
     PangoFont *font;
     PangoFontMetrics *metrics;
+    PangoFontMap *fontmap;
 
     if (pango_context)
     {
@@ -425,7 +426,9 @@ pango_load (Lisp_Font *f)
 	char *langname, *p;
 
 #ifdef HAVE_PANGO_XFT
-	pango_context = pango_xft_get_context (dpy, screen_num);
+	// pango_context = pango_xft_get_context (dpy, screen_num);
+        fontmap = pango_xft_get_font_map (dpy, screen_num);
+        pango_context = pango_font_map_create_context (fontmap);
 #endif
 
 	langname = g_strdup (setlocale (LC_CTYPE, NULL));
